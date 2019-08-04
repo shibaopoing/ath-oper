@@ -22,7 +22,7 @@
         <div class="barFont">
           <el-link :underline="false">登陆</el-link>
           <div class="div-line">
-            <el-divider/>
+            <el-divider />
           </div>
           <el-link :underline="false">注册</el-link>
         </div>

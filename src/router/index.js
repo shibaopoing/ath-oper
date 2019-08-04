@@ -158,7 +158,36 @@ export const constantRoutes = [
       }
     ]
   },
-
+  {
+    path: '/movie',
+    component: Layout,
+    redirect: '/movie/query',
+    name: 'Movie',
+    meta: {
+      title: 'Movie',
+      icon: 'movie-manager'
+    },
+    children: [
+      {
+        path: 'query',
+        name: 'Form',
+        component: () => import('@/views/movie/query'),
+        meta: { title: 'query', icon: 'movie-search' }
+      },
+      {
+        path: 'create',
+        name: 'Form',
+        component: () => import('@/views/movie/create'),
+        meta: { title: 'create', icon: 'movie-upload' }
+      },
+      {
+        path: 'edit',
+        name: 'Form',
+        component: () => import('@/views/movie/edit'),
+        meta: { title: 'edit', icon: 'movie-edit' }
+      }
+    ]
+  },
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
 ]

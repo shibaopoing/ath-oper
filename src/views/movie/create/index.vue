@@ -1,56 +1,99 @@
 <template>
+  <el-container>
+    <el-page-header :content="currentStep" title="返回" @back="goBack" />
     <el-container>
-      <el-container >
-        <el-main>
-          <div>
-            <el-row v-show="active === 0" class="active0">
-              <div>
-                <BaseInfo></BaseInfo>
+      <el-main>
+        <div>
+          <el-row v-show="active === 0" class="active0">
+            <div>
+              <BaseInfo />
+            </div>
+          </el-row>
+          <el-row v-show="active === 1" class="active1">
+            <div>
+              <Cover />
+            </div>
+          </el-row>
+          <el-row v-show="active === 2" class="active2">
+            <div>
+              <SrcFile />
+            </div>
+          </el-row>
+          <el-row v-show="active === 3" class="active3">
+            <div class="div-center-v">
+              <el-alert
+                title="文件上传成功"
+                type="success"
+                description="请等待审批结果"
+                center
+                show-icon
+                :closable="false"
+              />
+              <div class="div-center-v">
+                <el-progress type="circle" :percentage="0" />
               </div>
-            </el-row>
-          </div>
-        </el-main>
-        <el-aside style="width:200px">
-          <div class="div-center">
-              <el-steps direction="vertical" :active="active" finish-status="success"  :space="100">
-                <el-step v-for="item in stepData" :key="item.index" :title="item.title" :icon="item.icon" @click.native="stepClick(item.index)" />
-              </el-steps>
-            <el-button type="primary" plain size="medium" @click="nextClick()">{{ nextTile }}</el-button>
-          </div>
-        </el-aside>
-      </el-container>
-      <el-footer>
-      </el-footer>
+            </div>
+          </el-row>
+        </div>
+      </el-main>
+      <el-aside style="width:200px">
+        <div class="div-center">
+          <el-steps direction="vertical" :active="active" finish-status="success" :space="100">
+            <el-step v-for="item in stepData" :key="item.index" :title="item.title" :icon="item.icon" @click.native="stepClick(item.index)" />
+          </el-steps>
+          <el-button type="primary" plain size="medium" @click="nextClick()">{{ nextTile }}</el-button>
+        </div>
+      </el-aside>
     </el-container>
+    <el-footer />
+  </el-container>
 </template>
 <script>
 // import Server from '../../request/api.js' // 注意路径
 import baseInfo from './baseInfo.vue'
+import cover from './cover.vue'
+import srcFile from './srcFile.vue'
 export default {
   name: 'Create',
+  components: {
+    'BaseInfo': baseInfo, // 将别名demo 变成 组件 Demo
+    'Cover': cover,
+    'SrcFile': srcFile
+  },
   data() {
     return {
       active: 0, // 控制步骤条及填写条目的显示
       stepData: [{ index: 0, title: '基本信息', icon: 'el-icon-edit' },
         { index: 1, title: '封面', icon: 'el-icon-edit' },
         { index: 2, title: '视频文件', icon: 'el-icon-edit' },
-        { index: 3, title: '完成', icon: 'el-icon-edit' }],
-      nextTile: '下一步'
+        { index: 3, title: '开始上传', icon: 'el-icon-edit' }],
+      nextTile: '下一步',
+      currentStep: '基本信息'
     }
-  },
-  components: {
-    'BaseInfo': baseInfo  //将别名demo 变成 组件 Demo
   },
   methods: {
     stepClick(val) {
       var _that = this
       _that.active = val
+      _that.currentStep = _that.stepData[_that.active].title
     },
     nextClick() {
       var _that = this
       console.log(_that.active)
       if (_that.active < 3) {
         _that.active++
+        _that.currentStep = _that.stepData[_that.active].title
+        console.log(_that.active)
+      } else {
+        _that.active = 0
+      }
+    },
+    goBack() {
+      var _that = this
+      console.log(_that.active)
+      if (_that.active > 0) {
+        _that.active--
+        _that.currentStep = _that.stepData[_that.active].title
         console.log(_that.active)
       } else {
         _that.active = 0
@@ -148,6 +191,13 @@ export default {
     width: 60%;
    // border: 3px solid green;
     padding: 20px;
+  }
+  .div-center-v {
+    margin: auto;
+    height: 50%;
+    //border: 3px solid green;
+    padding: 20px;
+    margin-top: 160px;
   }
 /*  body > .el-container {
     margin-bottom: 10px;

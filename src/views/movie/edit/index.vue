@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-steps :active="active" direction="vertical" >
+    <el-steps :active="active" direction="vertical">
       <el-step v-for="item in stepData" :key="item.index" :title="item.title" :icon="item.icon" @click.native="stepClick(item.index)" />
     </el-steps>
     <el-row v-show="active === 0" class="active0">

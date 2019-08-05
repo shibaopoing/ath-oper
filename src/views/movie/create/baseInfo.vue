@@ -1,43 +1,44 @@
 <template>
   <div class="div-container">
-    <el-form class="div-form" :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px">
+    <el-form ref="ruleForm" class="div-form" :model="ruleForm" :rules="rules" label-width="100px">
       <el-form-item label="电影名称" prop="name">
-        <el-input v-model="ruleForm.name"></el-input>
+        <el-input v-model="ruleForm.name" />
       </el-form-item>
       <el-form-item label="出版区域" prop="region">
         <el-select v-model="ruleForm.region" placeholder="请选择出版区域">
-          <el-option label="欧美" value="oumei"></el-option>
-          <el-option label="大陆" value="dalu"></el-option>
-          <el-option label="香港" value="xg"></el-option>
-          <el-option label="台湾" value="tw"></el-option>
-          <el-option label="日韩" value="rh"></el-option>
-          <el-option label="泰国" value="tg"></el-option>
-          <el-option label="印度" value="yd"></el-option>
-          <el-option label="其他" value="ot"></el-option>
+          <el-option label="欧美" value="oumei" />
+          <el-option label="大陆" value="dalu" />
+          <el-option label="香港" value="xg" />
+          <el-option label="台湾" value="tw" />
+          <el-option label="日韩" value="rh" />
+          <el-option label="泰国" value="tg" />
+          <el-option label="印度" value="yd" />
+          <el-option label="其他" value="ot" />
         </el-select>
       </el-form-item>
       <el-form-item label="出版时间" required>
         <el-col :span="11">
           <el-form-item prop="date1">
-            <el-date-picker type="date" placeholder="选择日期" v-model="ruleForm.date1" style="width: 100%;"></el-date-picker>
+            <el-date-picker v-model="ruleForm.date1" type="date" placeholder="选择日期" style="width: 100%;" />
           </el-form-item>
         </el-col>
       </el-form-item>
       <el-form-item label="视频性质" prop="type">
         <el-checkbox-group v-model="ruleForm.type">
-          <el-checkbox v-for="item in checkBoxData" :key="item.index" :label="item.label" name="type"></el-checkbox>
+          <el-checkbox v-for="item in checkBoxData" :key="item.index" :label="item.label" name="type" />
         </el-checkbox-group>
       </el-form-item>
       <el-form-item label="导演" prop="resource">
-        <el-input v-model="ruleForm.name"></el-input>
+        <el-input v-model="ruleForm.name" />
       </el-form-item>
       <el-form-item
-        v-for="(domain, index) in dynamicValidateForm.domains"
+        v-for="(item, index) in ruleForm.mainRoles"
+        :key="item.key"
         :label="'主演' + index"
-        :key="domain.key"
-        :prop="'domains.' + index + '.value'"
+        :prop="'mainRoles.' + index + '.value'"
+        :rules="{required: true, message: '域名不能为空', trigger: 'blur'}"
       >
-        <el-input v-model="ruleForm.mainRoles" style="width: 350px"></el-input><el-button @click.prevent="removeDomain(domain)">删除</el-button>
+        <el-input v-model="item.value" style="width: 350px" /><el-button :disabled="item.Disabled" @click.prevent="removeDomain(item)">删除</el-button>
       </el-form-item>
       <el-form-item>
         <el-button @click="addDomain">新增主演</el-button>
@@ -58,7 +59,7 @@ export default {
         date2: '',
         delivery: false,
         type: [],
-        mainRoles: [],
+        mainRoles: [{ value: '', Disabled: true }],
         resource: '',
         desc: ''
       },
@@ -74,11 +75,6 @@ export default {
         { index: 10, label: '儿童', value: '10' },
         { index: 11, label: '动漫', value: '11' },
         { index: 12, label: '其他', value: '12' }],
-      dynamicValidateForm: {
-        domains: [{
-          value: ''
-        }]
-      },
       rules: {
         name: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
@@ -98,9 +94,6 @@ export default {
         ],
         resource: [
           { required: true, message: '请选择活动资源', trigger: 'change' }
-        ],
-        mainRole: [
-          { type: 'array', required: true, message: '域名不能为空', trigger: 'change' }
         ],
         desc: [
           { required: true, message: '请填写活动形式', trigger: 'blur' }
@@ -123,14 +116,15 @@ export default {
       this.$refs[formName].resetFields()
     },
     removeDomain(item) {
-      var index = this.dynamicValidateForm.domains.indexOf(item)
+      var index = this.ruleForm.mainRoles.indexOf(item)
       if (index !== -1) {
-        this.dynamicValidateForm.domains.splice(index, 1)
+        this.ruleForm.mainRoles.splice(index, 1)
       }
     },
     addDomain() {
-      this.dynamicValidateForm.domains.push({
+      this.ruleForm.mainRoles.push({
         value: '',
+        Disabled: false,
         key: Date.now()
       })
     }

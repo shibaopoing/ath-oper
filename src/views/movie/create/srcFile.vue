@@ -1,0 +1,33 @@
+<template>
+  <div>
+    <el-input
+      v-model="srcPath"
+      placeholder="请输入本地文件路径"
+    >
+      <template slot="prepend">视频文件路径</template>
+      <el-button slot="append" icon="el-icon-upload2" type="primary" />
+    </el-input>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'SrcFile',
+  data() {
+    return {
+      srcPath: ''
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+  .div-center {
+    //background-color: #97a8be;
+    margin: auto;
+    height: 50%;
+    //border: 3px solid green;
+    padding: 20px;
+    margin-top: 160px;
+  }
+</style>

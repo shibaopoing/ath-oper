@@ -28,20 +28,8 @@
           <el-checkbox v-for="item in checkBoxData" :key="item.index" :label="item.label" name="type" />
         </el-checkbox-group>
       </el-form-item>
-      <el-form-item label="导演" prop="resource">
-        <el-input v-model="ruleForm.name" />
-      </el-form-item>
-      <el-form-item
-        v-for="(item, index) in ruleForm.mainRoles"
-        :key="item.key"
-        :label="'主演' + index"
-        :prop="'mainRoles.' + index + '.value'"
-        :rules="{required: true, message: '域名不能为空', trigger: 'blur'}"
-      >
-        <el-input v-model="item.value" style="width: 350px" /><el-button :disabled="item.Disabled" @click.prevent="removeDomain(item)">删除</el-button>
-      </el-form-item>
-      <el-form-item>
-        <el-button @click="addDomain">新增主演</el-button>
+      <el-form-item label="影片描述" prop="desc">
+        <el-input v-model="ruleForm.desc" type="textarea" />
       </el-form-item>
     </el-form>
   </div>
@@ -96,7 +84,7 @@ export default {
           { required: true, message: '请选择活动资源', trigger: 'change' }
         ],
         desc: [
-          { required: true, message: '请填写活动形式', trigger: 'blur' }
+          { required: true, message: '请填写影片描述', trigger: 'blur' }
         ]
       }
     }
@@ -114,19 +102,6 @@ export default {
     },
     resetForm(formName) {
       this.$refs[formName].resetFields()
-    },
-    removeDomain(item) {
-      var index = this.ruleForm.mainRoles.indexOf(item)
-      if (index !== -1) {
-        this.ruleForm.mainRoles.splice(index, 1)
-      }
-    },
-    addDomain() {
-      this.ruleForm.mainRoles.push({
-        value: '',
-        Disabled: false,
-        key: Date.now()
-      })
     }
   }
 }

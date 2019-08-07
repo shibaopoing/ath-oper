@@ -11,16 +11,22 @@
           </el-row>
           <el-row v-show="active === 1" class="active1">
             <div>
-              <Cover />
+              <Roles />
             </div>
           </el-row>
           <el-row v-show="active === 2" class="active2">
             <div>
-              <SrcFile />
+              <Cover />
             </div>
           </el-row>
           <el-row v-show="active === 3" class="active3">
+            <div>
+              <SrcFile />
+            </div>
+          </el-row>
+          <el-row v-show="active === 4" class="active4">
             <div class="div-center-v">
+              <el-progress :text-inside="true" :stroke-width="26" :percentage="70" />
               <el-alert
                 title="文件上传成功"
                 type="success"
@@ -29,16 +35,13 @@
                 show-icon
                 :closable="false"
               />
-              <div class="div-center-v">
-                <el-progress type="circle" :percentage="0" />
-              </div>
             </div>
           </el-row>
         </div>
       </el-main>
       <el-aside style="width:200px">
         <div class="div-center">
-          <el-steps direction="vertical" :active="active" finish-status="success" :space="100">
+          <el-steps direction="vertical" :active="active" finish-status="success" :space="80">
             <el-step v-for="item in stepData" :key="item.index" :title="item.title" :icon="item.icon" @click.native="stepClick(item.index)" />
           </el-steps>
           <el-button type="primary" plain size="medium" @click="nextClick()">{{ nextTile }}</el-button>
@@ -53,20 +56,23 @@
 import baseInfo from './baseInfo.vue'
 import cover from './cover.vue'
 import srcFile from './srcFile.vue'
+import roles from './roles.vue'
 export default {
   name: 'Create',
   components: {
     'BaseInfo': baseInfo, // 将别名demo 变成 组件 Demo
     'Cover': cover,
-    'SrcFile': srcFile
+    'SrcFile': srcFile,
+    'Roles': roles
   },
   data() {
     return {
       active: 0, // 控制步骤条及填写条目的显示
       stepData: [{ index: 0, title: '基本信息', icon: 'el-icon-edit' },
-        { index: 1, title: '封面', icon: 'el-icon-edit' },
-        { index: 2, title: '视频文件', icon: 'el-icon-edit' },
-        { index: 3, title: '开始上传', icon: 'el-icon-edit' }],
+        { index: 1, title: '导演与演员', icon: 'el-icon-edit' },
+        { index: 2, title: '封面', icon: 'el-icon-edit' },
+        { index: 3, title: '视频文件', icon: 'el-icon-edit' },
+        { index: 4, title: '结束', icon: 'el-icon-edit' }],
       nextTile: '下一步',
       currentStep: '基本信息'
     }
@@ -74,13 +80,15 @@ export default {
   methods: {
     stepClick(val) {
       var _that = this
-      _that.active = val
-      _that.currentStep = _that.stepData[_that.active].title
+      if (_that.active > val) {
+        _that.active = val
+        _that.currentStep = _that.stepData[_that.active].title
+      }
     },
     nextClick() {
       var _that = this
       console.log(_that.active)
-      if (_that.active < 3) {
+      if (_that.active < 4) {
         _that.active++
         _that.currentStep = _that.stepData[_that.active].title
         console.log(_that.active)
@@ -188,16 +196,15 @@ export default {
   }
   .div-center {
     margin: auto;
-    width: 60%;
+    width: 80%;
    // border: 3px solid green;
     padding: 20px;
   }
   .div-center-v {
     margin: auto;
-    height: 50%;
+    //height: 80%;
     //border: 3px solid green;
-    padding: 20px;
-    margin-top: 160px;
+    padding: 40px;
   }
 /*  body > .el-container {
     margin-bottom: 10px;

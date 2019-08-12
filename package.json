@@ -17,13 +17,17 @@
   "dependencies": {
     "axios": "0.18.1",
     "element-ui": "^2.11.1",
+    "jquery": "^3.4.1",
     "js-cookie": "2.2.0",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",
     "path-to-regexp": "2.4.0",
+    "spark-md5": "latest",
     "vue": "2.6.10",
     "vue-router": "3.0.6",
-    "vuex": "3.1.0"
+    "vue-simple-uploader": "^0.7.1",
+    "vuex": "3.1.0",
+    "webpack": "latest"
   },
   "devDependencies": {
     "@babel/core": "7.0.0",

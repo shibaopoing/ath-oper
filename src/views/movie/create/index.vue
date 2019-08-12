@@ -20,7 +20,7 @@
             </div>
           </el-row>
           <el-row v-show="active === 3" class="active3">
-            <div>
+            <div class="div-center">
               <SrcFile />
             </div>
           </el-row>

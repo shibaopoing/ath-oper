@@ -7,14 +7,13 @@ import 'element-ui/lib/theme-chalk/index.css'
 import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 
 import '@/styles/index.scss' // global css
-
 import App from './App'
 import store from './store'
 import router from './router'
-
 import '@/icons' // icon
 import '@/permission' // permission control
-
+import $ from 'jquery'
+Vue.prototype.$ = $
 /**
  * If you don't want to use mock-server
  * you want to use MockJs for mock api
@@ -27,8 +26,9 @@ import { mockXHR } from '../mock'
 if (process.env.NODE_ENV === 'production') {
   mockXHR()
 }
-
-// set ElementUI lang to EN
+import uploader from 'vue-simple-uploader'
+Vue.use(uploader)
+// // set ElementUI lang to EN
 Vue.use(ElementUI, { locale })
 
 Vue.config.productionTip = false

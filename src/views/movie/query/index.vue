@@ -8,7 +8,7 @@
           </template>
           <el-form ref="ruleForm" class="div-form" label-position="right" size="mini" :model="ruleForm" inline="true" :rules="rules" label-width="80px">
             <el-col>
-              <el-form-item label="名称"  prop="name">
+              <el-form-item label="名称" prop="name">
                 <el-input v-model="ruleForm.name" />
               </el-form-item>
               <el-form-item label="出版区域" prop="region">
@@ -24,18 +24,18 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="出版时间" prop="date1">
-                <el-date-picker v-model="ruleForm.date1" type="date" placeholder="选择日期"  style="width: 90%;"/>
+                <el-date-picker v-model="ruleForm.date1" type="date" placeholder="选择日期" style="width: 90%;" />
               </el-form-item>
             </el-col>
             <el-col>
               <el-form-item label="导演" prop="name">
                 <el-input v-model="ruleForm.name" />
               </el-form-item>
-              <el-form-item label="主演"  prop="name">
+              <el-form-item label="主演" prop="name">
                 <el-input v-model="ruleForm.name" />
               </el-form-item>
               <el-form-item label="出版时间" prop="date1">
-                <el-date-picker v-model="ruleForm.date1" type="date" placeholder="选择日期"  style="width: 90%;"/>
+                <el-date-picker v-model="ruleForm.date1" type="date" placeholder="选择日期" style="width: 90%;" />
               </el-form-item>
             </el-col>
             <el-col>

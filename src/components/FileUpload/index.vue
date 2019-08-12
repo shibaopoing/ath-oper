@@ -1,5 +1,6 @@
 <template>
   <div id="global-uploader">
+
     <!-- 上传 -->
     <uploader
       ref="uploader"
@@ -13,14 +14,19 @@
     >
       <uploader-unsupport />
 
-      <uploader-btn ref="uploadBtn" :attrs="attrs">选择文件</uploader-btn>
+      <uploader-btn id="global-uploader-btn" ref="uploadBtn" :attrs="attrs">选择文件</uploader-btn>
+
       <uploader-list v-show="panelShow">
         <div slot-scope="props" class="file-panel" :class="{'collapse': collapse}">
           <div class="file-title">
-            <span>文件列表</span>
+            <h2>文件列表</h2>
             <div class="operate">
-              <el-button type="text" :title="collapse ? '展开':'折叠' " icon="el-icon-d-caret" @click="fileListShow" />
-              <el-button type="text" title="关闭" icon="el-icon-close" @click="close" />
+              <el-button type="text" :title="collapse ? '展开':'折叠' " @click="fileListShow">
+                <i class="iconfont" :class="collapse ? 'inuc-fullscreen': 'inuc-minus-round'" />
+              </el-button>
+              <el-button type="text" title="关闭" @click="close">
+                <i class="iconfont icon-close" />
+              </el-button>
             </div>
           </div>
 
@@ -46,8 +52,8 @@
  *            Bus.$on('fileSuccess', fn); 文件上传成功的回调
  */
 
-import { ACCEPT_CONFIG } from '../../../js/config'
-import Bus from '../../../js/bus'
+import { ACCEPT_CONFIG } from '../../js/config'
+import Bus from '../../js/bus'
 import SparkMD5 from 'spark-md5'
 
 // 这两个是我自己项目中用的，请忽略
@@ -56,10 +62,11 @@ import { Ticket } from '@/assets/js/utils'
 import api from '@/api'*/
 
 export default {
+  components: {},
   data() {
     return {
       options: {
-        target: '',
+        target: /api.simpleUploadURL/,
         chunkSize: '2048000',
         fileParameterName: 'upfile',
         maxChunkRetries: 3,
@@ -74,15 +81,15 @@ export default {
           return (objMessage.uploaded || []).indexOf(chunk.offset + 1) >= 0
         },
         headers: {
-          /* Authorization: Ticket.get() && 'Bearer ' + Ticket.get().access_token*/
+          // Authorization: Ticket.get() && 'Bearer ' + Ticket.get().access_token
         },
         query() {}
       },
       attrs: {
         accept: ACCEPT_CONFIG.getAll()
       },
-      panelShow: true, // 选择文件后，展示上传panel
-      collapse: true
+      panelShow: false, // 选择文件后，展示上传panel
+      collapse: false
     }
   },
   computed: {
@@ -97,7 +104,7 @@ export default {
       this.params = query || {}
 
       if (this.$refs.uploadBtn) {
-        ('#global-uploader-btn').click()
+        $('#global-uploader-btn').click()
       }
     })
   },
@@ -129,6 +136,18 @@ export default {
       if (res.needMerge) {
         // 文件状态设为“合并中”
         this.statusSet(file.id, 'merging')
+        /*
+        api.mergeSimpleUpload({
+          tempName: res.tempName,
+          fileName: file.name,
+          ...this.params
+        }).then(res => {
+          // 文件合并成功
+          Bus.$emit('fileSuccess')
+
+          this.statusRemove(file.id)
+        }).catch(e => {})*/
+
         // 不需要合并
       } else {
         Bus.$emit('fileSuccess')
@@ -170,7 +189,7 @@ export default {
 
           // 实时展示MD5的计算进度
           this.$nextTick(() => {
-            (`.myStatus_${file.id}`).text('校验MD5 ' + ((currentChunk / chunks) * 100).toFixed(0) + '%')
+            $(`.myStatus_${file.id}`).text('校验MD5 ' + ((currentChunk / chunks) * 100).toFixed(0) + '%')
           })
         } else {
           const md5 = spark.end()
@@ -206,7 +225,7 @@ export default {
     },
 
     fileListShow() {
-      const $list = ('#global-uploader .file-list')
+      const $list = $('#global-uploader .file-list')
 
       if ($list.is(':visible')) {
         $list.slideUp()
@@ -248,7 +267,7 @@ export default {
       }
 
       this.$nextTick(() => {
-        (`<p class="myStatus_${id}"></p>`).appendTo(`.file_${id} .uploader-file-status`).css({
+        $(`<p class="myStatus_${id}"></p>`).appendTo(`.file_${id} .uploader-file-status`).css({
           'position': 'absolute',
           'top': '0',
           'left': '0',
@@ -261,7 +280,7 @@ export default {
     },
     statusRemove(id) {
       this.$nextTick(() => {
-        (`.myStatus_${id}`).remove()
+        $(`.myStatus_${id}`).remove()
       })
     },
 
@@ -278,27 +297,16 @@ export default {
 </script>
 
 <style scoped lang="scss">
-  .div-center {
-    //background-color: #97a8be;
-    margin: auto;
-    //border: 3px solid green;
-    padding: 20px;
-    margin-top: 160px;
-  }
-  .div-center-v {
-    margin: auto;
-    height: 40%;
-    //border: 3px solid green;
-    padding: 20px;
-    margin-top: 60px;
-  }
   #global-uploader {
     position: fixed;
     z-index: 20;
+    right: 15px;
+    bottom: 15px;
+
     .uploader-app {
-      border: #2ba8a8;
-      width: 1000px;
+      width: 520px;
     }
+
     .file-panel {
       background-color: #fff;
       border: 1px solid #e2e2e2;
@@ -309,6 +317,7 @@ export default {
         display: flex;
         height: 40px;
         line-height: 40px;
+        padding: 0 15px;
         border-bottom: 1px solid #ddd;
 
         .operate {
@@ -335,10 +344,39 @@ export default {
         }
       }
     }
-  }
-  /* 隐藏上传按钮 */
-  /*  #global-uploader-btn {
+
+    .no-file {
       position: absolute;
-      clip: rect(0, 0, 0, 0);
-    }*/
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 16px;
+    }
+
+    /deep/.uploader-file-icon {
+      &:before {
+        content: '' !important;
+      }
+
+      &[icon=image] {
+        background: url(../../assets/images/image-icon.png);
+      }
+      &[icon=video] {
+        background: url(../../assets/images/video-icon.png);
+      }
+      &[icon=document] {
+        background: url(../../assets/images/text-icon.png);
+      }
+    }
+
+    /deep/.uploader-file-actions > span {
+      margin-right: 6px;
+    }
+  }
+
+  /* 隐藏上传按钮 */
+  #global-uploader-btn {
+    position: absolute;
+    clip: rect(0, 0, 0, 0);
+  }
 </style>

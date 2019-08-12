@@ -12,10 +12,6 @@ export default {
   name: 'App',
   components: {
     globalUploader
-  },
-  computed: {},
-  watch: {},
-  created() {
   }
 }
 </script>

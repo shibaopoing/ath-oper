@@ -23,7 +23,7 @@
                   <el-option label="其他" value="ot" />
                 </el-select>
               </el-form-item>
-              <el-form-item label="出版时间" prop="date1">
+              <el-form-item label="上映时间" prop="date1">
                 <el-date-picker v-model="ruleForm.date1" type="date" placeholder="选择日期" style="width: 90%;" />
               </el-form-item>
             </el-col>
@@ -34,25 +34,25 @@
               <el-form-item label="主演" prop="name">
                 <el-input v-model="ruleForm.name" />
               </el-form-item>
-              <el-form-item label="出版时间" prop="date1">
-                <el-date-picker v-model="ruleForm.date1" type="date" placeholder="选择日期" style="width: 90%;" />
-              </el-form-item>
             </el-col>
             <el-col>
               <el-form-item label="类型" prop="type">
                 <el-popover trigger="hover" placement="right">
                   <div style="width: 170px;height: 120px">
-                    <el-checkbox-group v-model="ruleForm.type" size="mini" border="true">
+                    <el-checkbox-group v-model="ruleForm.type" size="mini" border="true" @change="handleCheckedCitiesChange">
                       <el-checkbox v-for="item in checkBoxData" :key="item.index" :label="item.label" name="type" />
                     </el-checkbox-group>
                   </div>
                   <div slot="reference" class="name-wrapper">
-                    <el-button size="mini" style="width: 100%">11111111</el-button>
+                    <el-button size="mini" style="width: 100%">{{ checkLabel }}</el-button>
                   </div>
                 </el-popover>
               </el-form-item>
             </el-col>
           </el-form>
+          <div class="div-center">
+            <el-button size="mini" type="primary">查询</el-button>
+          </div>
         </el-collapse-item>
       </el-collapse>
       <el-table :data="tableData" style="width: 100%" size="mini" max-height="500">
@@ -104,6 +104,7 @@ export default {
   name: 'Index',
   data() {
     return {
+      checkLabel: '',
       activeName: '1',
       ruleForm: {
         name: '',
@@ -179,6 +180,12 @@ export default {
         }
       })
     },
+    handleCheckedCitiesChange(value) {
+      // const checkedCount = value.length
+      this.checkLabel = value
+      /*      this.checkAll = checkedCount === this.cities.length
+      this.isIndeterminate = checkedCount > 0 && checkedCount < this.cities.length*/
+    },
     resetForm(formName) {
       this.$refs[formName].resetFields()
     },
@@ -202,5 +209,13 @@ export default {
     //transform: translate(-50%,-50%);
     position: absolute;
     margin: 20px;
+  }
+  .div-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    width: 100%;
+   // border: 3px solid green;
   }
 </style>

@@ -3,8 +3,12 @@
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <breadcrumb class="breadcrumb-container" />
-
     <div class="right-menu">
+      <el-badge v-bind:value="fileUploadNum" class="badge-container">
+        <div class="avatar-wrapper">
+          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar" @click="uploadBoard">
+        </div>
+      </el-badge>
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
@@ -35,11 +39,16 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-
+import Bus from '../../js/bus'
 export default {
   components: {
     Breadcrumb,
     Hamburger
+  },
+  data() {
+    return {
+      fileUploadNum: 11
+    }
   },
   computed: {
     ...mapGetters([
@@ -54,6 +63,12 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    uploadBoard() {
+      // 打开文件选择框
+      Bus.$emit('showUploadBoard', {
+        id: '1111' // 传入的参数
+      })
     }
   }
 }
@@ -92,7 +107,6 @@ export default {
     &:focus {
       outline: none;
     }
-
     .right-menu-item {
       display: inline-block;
       padding: 0 8px;
@@ -110,14 +124,23 @@ export default {
         }
       }
     }
+    .badge-container {
+      margin-right: 10px;
+      padding-bottom: 10px;
+      .avatar-wrapper {
+        position: relative;
+        .user-avatar {
+          cursor: pointer;
+          width: 40px;
+          height: 40px;
+          border-radius: 10px;
+        }
 
     .avatar-container {
       margin-right: 30px;
-
       .avatar-wrapper {
         margin-top: 5px;
         position: relative;
-
         .user-avatar {
           cursor: pointer;
           width: 40px;
@@ -135,5 +158,6 @@ export default {
       }
     }
   }
+
 }
 </style>

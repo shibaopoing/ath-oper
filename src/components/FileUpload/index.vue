@@ -17,9 +17,9 @@
       <uploader-btn id="global-uploader-btn" ref="uploadBtn" :attrs="attrs">选择文件</uploader-btn>
 
       <uploader-list v-show="panelShow">
-        <div slot-scope="props" class="file-panel" :class="{'collapse': collapse}">
+        <div slot-scope="props" class="file-panel" :class="{'collapse': collapse}" >
           <div class="file-title">
-            <h2>文件列表</h2>
+            <h2>文件列表:{{fileNum=props.fileList.length}}</h2>
             <div class="operate">
               <el-button type="text" :title="collapse ? '展开':'折叠' " @click="fileListShow">
                 <i class="iconfont" :class="collapse ? 'inuc-fullscreen': 'inuc-minus-round'" />
@@ -31,7 +31,7 @@
           </div>
 
           <ul class="file-list">
-            <li v-for="file in props.fileList" :key="file.id">
+            <li v-for="file in props.fileList" :key="file.id" >
               <uploader-file ref="files" :class="'file_' + file.id" :file="file" :list="true" />
             </li>
             <div v-if="!props.fileList.length" class="no-file"><i class="iconfont icon-empty-file" /> 暂无待上传文件</div>
@@ -65,10 +65,10 @@ export default {
   components: {},
   data() {
     return {
+      fileNum: 0,
       options: {
         target: /api.simpleUploadURL/,
         chunkSize: '2048000',
-        fileParameterName: 'upfile',
         maxChunkRetries: 3,
         testChunks: true, // 是否开启服务器分片校验
         // 服务器分片校验函数，秒传及断点续传基础
@@ -107,6 +107,14 @@ export default {
         $('#global-uploader-btn').click()
       }
     })
+    Bus.$on('showUploadBoard', param => {
+      this.params = param || {}
+      if (this.panelShow) {
+        this.panelShow = false
+      } else {
+        this.panelShow = true
+      }
+    })
   },
   destroyed() {
     Bus.$off('openUploader')
@@ -115,7 +123,6 @@ export default {
     onFileAdded(file) {
       this.panelShow = true
       this.computeMD5(file)
-
       Bus.$emit('fileAdded')
     },
     onFileProgress(rootFile, file, chunk) {

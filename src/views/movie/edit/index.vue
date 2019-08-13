@@ -1,7 +1,8 @@
 <!-- 一个上传事例文件 -->
 <template>
   <div>
-    <el-button @click="upload">上传</el-button>
+    <el-button @click="upload">上传
+    </el-button>
   </div>
 </template>
 

@@ -135,7 +135,8 @@ export default {
           height: 40px;
           border-radius: 10px;
         }
-
+      }
+    }
     .avatar-container {
       margin-right: 30px;
       .avatar-wrapper {

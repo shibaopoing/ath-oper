@@ -55,7 +55,7 @@ export const constantRoutes = [
     }]
   },
 
-  {
+  /*  {
     path: '/example',
     component: Layout,
     redirect: '/example/table',
@@ -157,7 +157,7 @@ export const constantRoutes = [
         meta: { title: 'External Link', icon: 'link' }
       }
     ]
-  },
+  },*/
   {
     path: '/movie',
     component: Layout,

@@ -44,7 +44,7 @@
                     </el-checkbox-group>
                   </div>
                   <div slot="reference" class="name-wrapper">
-                    <el-button size="mini" style="width: 100%">{{ checkLabel }}</el-button>
+                    <el-button size="mini" style="width: 100%">请选择:{{ checkLabel }}</el-button>
                   </div>
                 </el-popover>
               </el-form-item>
@@ -55,7 +55,7 @@
           </div>
         </el-collapse-item>
       </el-collapse>
-      <el-table :data="tableData" style="width: 100%" size="mini" max-height="500">
+      <el-table :data="tableData" style="width: 100%" size="mini" max-height="100%">
         <el-table-column label="日期" width="180">
           <template slot-scope="scope">
             <i class="el-icon-time" />
@@ -94,8 +94,10 @@
           </template>
         </el-table-column>
       </el-table>
+      <div class="pageCounter">
+        <el-pagination  background layout="prev, pager, next" :total="1000"></el-pagination>
+      </div>
     </el-card>
-
   </div>
 </template>
 
@@ -133,6 +135,38 @@ export default {
         date: '2016-05-03',
         name: '王小虎',
         address: '上海市普陀区金沙江路 1516 弄'
+      },
+      {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1516 弄'
+      },
+      {
+        date: '2016-05-02',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1518 弄'
+      }, {
+        date: '2016-05-04',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1517 弄'
+      }, {
+        date: '2016-05-01',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1519 弄'
+      }, {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1516 弄'
+      },
+      {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1516 弄'
+      },
+      {
+        date: '2016-05-03',
+        name: '王小虎',
+        address: '上海市普陀区金沙江路 1516 弄'
       }],
       checkBoxData: [{ index: 0, label: '科幻', value: '1' },
         { index: 1, label: '动作', value: '2' },
@@ -145,8 +179,8 @@ export default {
         { index: 9, label: '体育', value: '9' },
         { index: 10, label: '儿童', value: '10' },
         { index: 11, label: '动漫', value: '11' },
-        { index: 12, label: '其他', value: '12' }],
-      rules: {
+        { index: 12, label: '其他', value: '12' }]
+      /*      rules: {
         name: [
           { required: true, message: '请输入活动名称', trigger: 'blur' },
           { min: 3, max: 5, message: '长度在 3 到 5 个字符', trigger: 'blur' }
@@ -166,7 +200,7 @@ export default {
         resource: [
           { required: true, message: '请选择活动资源', trigger: 'change' }
         ]
-      }
+      }*/
     }
   },
   methods: {
@@ -201,21 +235,34 @@ export default {
 
 <style lang="scss" scoped>
   .home-container {
+    display: flex;
+    justify-content: center;
+    margin: auto;
     min-height: 100%;
     width: 100%;
-    overflow: hidden;
+
   }
   .box-card{
-    //transform: translate(-50%,-50%);
+    //transform: translate(10%,10%);
+    //background-color: #1482f0;
+    height: 90%;
     position: absolute;
     margin: 20px;
   }
   .div-center {
     display: flex;
     justify-content: center;
-    align-items: center;
     margin: auto;
     width: 100%;
    // border: 3px solid green;
+  }
+  .pageCounter{
+    display: flex;
+    float: bottom;
+    position: absolute;
+    bottom: 10px;
+    justify-content: center;
+    margin: auto;
+    width: 100%;
   }
 </style>

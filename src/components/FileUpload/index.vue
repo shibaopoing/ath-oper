@@ -17,9 +17,9 @@
       <uploader-btn id="global-uploader-btn" ref="uploadBtn" :attrs="attrs">选择文件</uploader-btn>
 
       <uploader-list v-show="panelShow">
-        <div slot-scope="props" class="file-panel" :class="{'collapse': collapse}" >
+        <div slot-scope="props" class="file-panel" :class="{'collapse': collapse}">
           <div class="file-title">
-            <h2>文件列表:{{fileNum=props.fileList.length}}</h2>
+            <h2>文件列表:{{ fileNum=props.fileList.length }}</h2>
             <div class="operate">
               <el-button type="text" :title="collapse ? '展开':'折叠' " @click="fileListShow">
                 <i class="iconfont" :class="collapse ? 'inuc-fullscreen': 'inuc-minus-round'" />
@@ -31,7 +31,7 @@
           </div>
 
           <ul class="file-list">
-            <li v-for="file in props.fileList" :key="file.id" >
+            <li v-for="file in props.fileList" :key="file.id">
               <uploader-file ref="files" :class="'file_' + file.id" :file="file" :list="true" />
             </li>
             <div v-if="!props.fileList.length" class="no-file"><i class="iconfont icon-empty-file" /> 暂无待上传文件</div>
@@ -98,7 +98,13 @@ export default {
       return this.$refs.uploader.uploader
     }
   },
-  watch: {},
+  watch: {
+    fileNum: function(val, oldVal) {
+      Bus.$emit('fileNumChange', {
+        iCount: val // 传入的参数
+      })
+    }
+  },
   mounted() {
     Bus.$on('openUploader', query => {
       this.params = query || {}
@@ -113,6 +119,13 @@ export default {
         this.panelShow = false
       } else {
         this.panelShow = true
+      }
+    })
+    Bus.$on('uploadMyFile', param => {
+      this.params = param || {}
+      for (let i = 0; i < this.params.file.length; i++) {
+        const obj = this.params.file[i]
+        this.uploader.addFile(obj)
       }
     })
   },

@@ -4,7 +4,7 @@
 
     <breadcrumb class="breadcrumb-container" />
     <div class="right-menu">
-      <el-badge v-bind:value="fileUploadNum" class="badge-container">
+      <el-badge :value="fileUploadNum" class="badge-container">
         <div class="avatar-wrapper">
           <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar" @click="uploadBoard">
         </div>
@@ -47,7 +47,7 @@ export default {
   },
   data() {
     return {
-      fileUploadNum: 11
+      fileUploadNum: 0
     }
   },
   computed: {
@@ -55,6 +55,12 @@ export default {
       'sidebar',
       'avatar'
     ])
+  },
+  mounted() {
+    Bus.$on('fileNumChange', params => {
+      this.params = params || {}
+      this.fileUploadNum = this.params.iCount
+    })
   },
   methods: {
     toggleSideBar() {

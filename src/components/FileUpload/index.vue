@@ -19,13 +19,13 @@
       <uploader-list v-show="panelShow">
         <div slot-scope="props" class="file-panel" :class="{'collapse': collapse}">
           <div class="file-title">
-            <h2>文件列表:{{ fileNum=props.fileList.length }}</h2>
+            <span style="font-weight:bold">文件列表:{{ fileNum=props.fileList.length }}</span>
             <div class="operate">
               <el-button type="text" :title="collapse ? '展开':'折叠' " @click="fileListShow">
-                <i class="iconfont" :class="collapse ? 'inuc-fullscreen': 'inuc-minus-round'" />
+                <svg-icon :icon-class="collapse ? 'zhankai': 'zhedie' "/>
               </el-button>
               <el-button type="text" title="关闭" @click="close">
-                <i class="iconfont icon-close" />
+                <svg-icon icon-class="close"/>
               </el-button>
             </div>
           </div>
@@ -134,7 +134,7 @@ export default {
   },
   methods: {
     onFileAdded(file) {
-      this.panelShow = true
+      // this.panelShow = true
       this.computeMD5(file)
       Bus.$emit('fileAdded')
     },
@@ -322,9 +322,8 @@ export default {
     z-index: 20;
     right: 15px;
     bottom: 15px;
-
     .uploader-app {
-      width: 520px;
+      width: 1000px;
     }
 
     .file-panel {
@@ -332,7 +331,6 @@ export default {
       border: 1px solid #e2e2e2;
       border-radius: 7px 7px 0 0;
       box-shadow: 0 0 10px rgba(0, 0, 0, .2);
-
       .file-title {
         display: flex;
         height: 40px;
@@ -348,7 +346,7 @@ export default {
 
       .file-list {
         position: relative;
-        height: 240px;
+        height: 400px;
         overflow-x: hidden;
         overflow-y: auto;
         background-color: #fff;

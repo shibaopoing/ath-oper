@@ -22,10 +22,10 @@ Vue.prototype.$ = $
  * Currently MockJs will be used in the production environment,
  * please remove it before going online! ! !
  */
-import { mockXHR } from '../mock'
+/* import { mockXHR } from '../mock'
 if (process.env.NODE_ENV === 'production') {
   mockXHR()
-}
+}*/
 import uploader from 'vue-simple-uploader'
 Vue.use(uploader)
 // // set ElementUI lang to EN

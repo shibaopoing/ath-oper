@@ -134,7 +134,7 @@ export default {
   },
   methods: {
     onFileAdded(file) {
-      // this.panelShow = true
+      this.panelShow = true
       this.computeMD5(file)
       Bus.$emit('fileAdded')
     },

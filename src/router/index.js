@@ -170,19 +170,19 @@ export const constantRoutes = [
     children: [
       {
         path: 'query',
-        name: 'Form',
+        name: 'query',
         component: () => import('@/views/movie/query'),
         meta: { title: 'query', icon: 'movie-search' }
       },
       {
         path: 'create',
-        name: 'Form',
+        name: 'create',
         component: () => import('@/views/movie/create'),
         meta: { title: 'create', icon: 'movie-upload' }
       },
       {
         path: 'edit',
-        name: 'Form',
+        name: 'edit',
         component: () => import('@/views/movie/edit'),
         meta: { title: 'edit', icon: 'movie-edit' }
       }

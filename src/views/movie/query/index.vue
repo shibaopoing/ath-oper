@@ -56,7 +56,7 @@
         </el-collapse-item>
       </el-collapse>
       <div class="">
-        <el-table :data="tableData" style="width: 100%" size="mini" max-height="340px">
+        <el-table :data="tableData" style="width: 100%" size="mini" max-height="60%">
             <el-table-column label="日期" width="180">
               <template slot-scope="scope">
                 <i class="el-icon-time" />

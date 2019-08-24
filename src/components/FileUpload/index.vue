@@ -11,6 +11,7 @@
       @file-success="onFileSuccess"
       @file-progress="onFileProgress"
       @file-error="onFileError"
+      @file-complete="fileComplete"
     >
       <uploader-unsupport />
 
@@ -22,10 +23,10 @@
             <span style="font-weight:bold">文件列表:{{ fileNum=props.fileList.length }}</span>
             <div class="operate">
               <el-button type="text" :title="collapse ? '展开':'折叠' " @click="fileListShow">
-                <svg-icon :icon-class="collapse ? 'zhankai': 'zhedie' "/>
+                <svg-icon :icon-class="collapse ? 'zhankai': 'zhedie' " />
               </el-button>
               <el-button type="text" title="关闭" @click="close">
-                <svg-icon icon-class="close"/>
+                <svg-icon icon-class="close" />
               </el-button>
             </div>
           </div>
@@ -54,20 +55,20 @@
 
 import { ACCEPT_CONFIG } from '../../js/config'
 import Bus from '../../js/bus'
-import SparkMD5 from 'spark-md5'
 
 // 这两个是我自己项目中用的，请忽略
 /*
 import { Ticket } from '@/assets/js/utils'
 import api from '@/api'*/
-
+import axios from 'axios'
+import qs from 'qs'
 export default {
   components: {},
   data() {
     return {
       fileNum: 0,
       options: {
-        target: /api.simpleUploadURL/,
+        target: '/dev-api/uploader/chunk',
         chunkSize: '2048000',
         maxChunkRetries: 3,
         testChunks: true, // 是否开启服务器分片校验
@@ -106,6 +107,9 @@ export default {
     }
   },
   mounted() {
+    this.$nextTick(() => {
+      window.uploader = this.$refs.uploader.uploader
+    })
     Bus.$on('openUploader', query => {
       this.params = query || {}
 
@@ -123,9 +127,9 @@ export default {
     })
     Bus.$on('uploadMyFile', param => {
       this.params = param || {}
-      for (let i = 0; i < this.params.file.length; i++) {
-        const obj = this.params.file[i]
-        this.uploader.addFile(obj)
+      for (let i = 0; i < this.params.files.length; i++) {
+        const file = this.params.files[i]
+        this.$refs.uploader.uploader.addFile(file)
       }
     })
   },
@@ -135,12 +139,12 @@ export default {
   methods: {
     onFileAdded(file) {
       this.panelShow = true
-      this.computeMD5(file)
       Bus.$emit('fileAdded')
     },
     onFileProgress(rootFile, file, chunk) {
       console.log(`上传中 ${file.name}，chunk：${chunk.startByte / 1024 / 1024} ~ ${chunk.endByte / 1024 / 1024}`)
     },
+
     onFileSuccess(rootFile, file, response, chunk) {
       const res = JSON.parse(response)
 
@@ -151,11 +155,22 @@ export default {
         this.statusSet(file.id, 'failed')
         return
       }
-
       // 如果服务端返回需要合并
       if (res.needMerge) {
         // 文件状态设为“合并中”
         this.statusSet(file.id, 'merging')
+        const fileName = rootFile.file.name
+        const uniqueIdentifier = rootFile.uniqueIdentifier
+        axios.post('/dev-api/uploader/mergeFile', qs.stringify({
+          filename: fileName,
+          identifier: uniqueIdentifier,
+          totalSize: file.size,
+          type: file.type
+        })).then(res => {
+          // 文件合并成功
+          Bus.$emit('fileSuccess')
+          this.statusRemove(file.id)
+        }).catch(e => {})
         /*
         api.mergeSimpleUpload({
           tempName: res.tempName,
@@ -174,76 +189,27 @@ export default {
         console.log('上传成功')
       }
     },
+    fileComplete() {
+      /*      console.log('file complete', arguments)
+      const file = arguments[0].file
+
+      axios.post('/dev-api/uploader/mergeFile', qs.stringify({
+        filename: file.name,
+        identifier: arguments[0].uniqueIdentifier,
+        totalSize: file.size,
+        type: file.type
+      })).then(function(response) {
+        console.log(response)
+      }).catch(function(error) {
+        console.log(error)
+      })*/
+    },
     onFileError(rootFile, file, response, chunk) {
       this.$message({
         message: response,
         type: 'error'
       })
     },
-
-    /**
-     * 计算md5，实现断点续传及秒传
-     * @param file
-     */
-    computeMD5(file) {
-      const fileReader = new FileReader()
-      const time = new Date().getTime()
-      const blobSlice = File.prototype.slice || File.prototype.mozSlice || File.prototype.webkitSlice
-      let currentChunk = 0
-      const chunkSize = 10 * 1024 * 1000
-      const chunks = Math.ceil(file.size / chunkSize)
-      const spark = new SparkMD5.ArrayBuffer()
-
-      // 文件状态设为"计算MD5"
-      this.statusSet(file.id, 'md5')
-      file.pause()
-
-      loadNext()
-
-      fileReader.onload = e => {
-        spark.append(e.target.result)
-
-        if (currentChunk < chunks) {
-          currentChunk++
-          loadNext()
-
-          // 实时展示MD5的计算进度
-          this.$nextTick(() => {
-            $(`.myStatus_${file.id}`).text('校验MD5 ' + ((currentChunk / chunks) * 100).toFixed(0) + '%')
-          })
-        } else {
-          const md5 = spark.end()
-          this.computeMD5Success(md5, file)
-          console.log(`MD5计算完毕：${file.name} \nMD5：${md5} \n分片：${chunks} 大小:${file.size} 用时：${new Date().getTime() - time} ms`)
-        }
-      }
-
-      fileReader.onerror = function() {
-        this.error(`文件${file.name}读取出错，请检查该文件`)
-        file.cancel()
-      }
-
-      function loadNext() {
-        const start = currentChunk * chunkSize
-        const end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize
-
-        fileReader.readAsArrayBuffer(blobSlice.call(file.file, start, end))
-      }
-    },
-
-    computeMD5Success(md5, file) {
-      // 将自定义参数直接加载uploader实例的opts上
-      Object.assign(this.uploader.opts, {
-        query: {
-          ...this.params
-        }
-      })
-
-      file.uniqueIdentifier = md5
-      file.resume()
-      this.statusRemove(file.id)
-    },
-
     fileListShow() {
       const $list = $('#global-uploader .file-list')
 
@@ -256,8 +222,6 @@ export default {
       }
     },
     close() {
-      this.uploader.cancel()
-
       this.panelShow = false
     },
 

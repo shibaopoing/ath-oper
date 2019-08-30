@@ -65,16 +65,14 @@ export default {
   watch: {
   },
   mounted() {
-
   },
   destroyed() {
     Bus.$off('openUploader')
   },
   methods: {
     readyToUpload() {
-      const fList = this.createNewFile(this.files)
       Bus.$emit('uploadMyFile', {
-        files: fList// 传入的参数
+        files: this.files// 传入的参数
       })
       this.files = []
     },
@@ -108,14 +106,6 @@ export default {
           return i
         }
       }
-    },
-    createNewFile(fList) {
-      const newFile = []
-      for (let i = 0; i < fList.length; i++) {
-        var aafile = new File([fList[i].file], fList[i].name)
-        newFile.push(aafile)
-      }
-      return newFile
     },
     /**
        * 新增的自定义的状态: 'md5'、'transcoding'、'failed'
@@ -210,6 +200,12 @@ export default {
       file.uniqueIdentifier = md5
       file.pause
       this.statusRemove(file.id)
+    },
+    isSupportFileApi() {
+      if (window.File && window.FileList && window.FileReader && window.Blob) {
+        return true
+      }
+      return false
     }
   }
 
@@ -228,7 +224,7 @@ export default {
       background-color: #fff;
       border: 1px solid #e2e2e2;
       border-radius: 7px 7px 0 0;
-      box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+      //box-shadow: 0 0 10px rgba(0, 0, 0, .2);
       .file-title {
         display: flex;
         height: 40px;
@@ -242,7 +238,7 @@ export default {
       }
       .file-list {
         position: relative;
-        height: 600px;
+        height: 450px;
         overflow-x: hidden;
         overflow-y: auto;
         background-color: #fff;

@@ -1,48 +1,55 @@
 <template>
-  <div id="global-uploader">
+  <el-dialog
+    id="global-uploader"
+    v-dialogDrag
+    :visible.sync="dialogVisible"
+    :title="'文件列表:'+this.fileNum"
+  >
+    <div>
+      <!-- 上传 -->
+      <uploader
+        ref="uploader"
+        :options="options"
+        :auto-start="false"
+        class="uploader-app"
+        @file-added="onFileAdded"
+        @file-success="onFileSuccess"
+        @file-progress="onFileProgress"
+        @file-error="onFileError"
+        @file-complete="fileComplete"
+      >
+        <uploader-unsupport />
 
-    <!-- 上传 -->
-    <uploader
-      ref="uploader"
-      :options="options"
-      :auto-start="false"
-      class="uploader-app"
-      @file-added="onFileAdded"
-      @file-success="onFileSuccess"
-      @file-progress="onFileProgress"
-      @file-error="onFileError"
-      @file-complete="fileComplete"
-    >
-      <uploader-unsupport />
+        <uploader-btn id="global-uploader-btn" ref="uploadBtn" :attrs="attrs">选择文件</uploader-btn>
 
-      <uploader-btn id="global-uploader-btn" ref="uploadBtn" :attrs="attrs">选择文件</uploader-btn>
-
-      <uploader-list v-show="panelShow">
-        <div slot-scope="props" class="file-panel" :class="{'collapse': collapse}">
-          <div class="file-title">
-            <span style="font-weight:bold">文件列表:{{ fileNum=props.fileList.length }}</span>
-            <div class="operate">
-              <el-button type="text" :title="collapse ? '展开':'折叠' " @click="fileListShow">
-                <svg-icon :icon-class="collapse ? 'zhankai': 'zhedie' " />
-              </el-button>
-              <el-button type="text" title="关闭" @click="close">
-                <svg-icon icon-class="close" />
-              </el-button>
+        <uploader-list v-show="true">
+          <div slot-scope="props" class="file-panel" :class="{'collapse': collapse}">
+            <div class="file-title">
+              <span style="display:none">文件列表:{{ fileNum=props.fileList.length }}</span>
+              <!--              <div class="operate">
+                <el-button type="text" :title="collapse ? '展开':'折叠' " @click="fileListShow">
+                  <svg-icon :icon-class="collapse ? 'zhankai': 'zhedie' " />
+                </el-button>
+                <el-button type="text" title="关闭" @click="close">
+                  <svg-icon icon-class="close" />
+                </el-button>
+              </div>-->
             </div>
+
+            <ul class="file-list">
+              <li v-for="file in props.fileList" :key="file.id">
+                <uploader-file ref="files" :class="'file_' + file.id" :file="file" :list="true" />
+              </li>
+              <div v-if="!props.fileList.length" class="no-file"><i class="iconfont icon-empty-file" /> 暂无待上传文件</div>
+            </ul>
           </div>
+        </uploader-list>
 
-          <ul class="file-list">
-            <li v-for="file in props.fileList" :key="file.id">
-              <uploader-file ref="files" :class="'file_' + file.id" :file="file" :list="true" />
-            </li>
-            <div v-if="!props.fileList.length" class="no-file"><i class="iconfont icon-empty-file" /> 暂无待上传文件</div>
-          </ul>
-        </div>
-      </uploader-list>
+      </uploader>
 
-    </uploader>
+    </div>
+  </el-dialog>
 
-  </div>
 </template>
 
 <script>
@@ -66,6 +73,7 @@ export default {
   components: {},
   data() {
     return {
+      dialogVisible: false,
       fileNum: 0,
       options: {
         target: '/dev-api/uploader/chunk',
@@ -119,17 +127,18 @@ export default {
     })
     Bus.$on('showUploadBoard', param => {
       this.params = param || {}
-      if (this.panelShow) {
-        this.panelShow = false
+      if (this.dialogVisible) {
+        this.dialogVisible = false
       } else {
-        this.panelShow = true
+        this.dialogVisible = true
       }
     })
     Bus.$on('uploadMyFile', param => {
       this.params = param || {}
       for (let i = 0; i < this.params.files.length; i++) {
         const file = this.params.files[i]
-        this.$refs.uploader.uploader.addFile(file)
+        const aFile = new File([file.file], file.name)
+        this.$refs.uploader.uploader.addFile(aFile)
       }
     })
   },
@@ -138,7 +147,7 @@ export default {
   },
   methods: {
     onFileAdded(file) {
-      this.panelShow = true
+      this.dialogVisible = true
       Bus.$emit('fileAdded')
     },
     onFileProgress(rootFile, file, chunk) {
@@ -222,7 +231,7 @@ export default {
       }
     },
     close() {
-      this.panelShow = false
+      this.dialogVisible = false
     },
 
     /**
@@ -282,25 +291,22 @@ export default {
 
 <style scoped lang="scss">
   #global-uploader {
-    position: fixed;
-    z-index: 20;
-    right: 15px;
-    bottom: 15px;
+    ///z-index: 20;
     .uploader-app {
-      width: 1000px;
+      //width: 1000px;
     }
 
     .file-panel {
       background-color: #fff;
       border: 1px solid #e2e2e2;
       border-radius: 7px 7px 0 0;
-      box-shadow: 0 0 10px rgba(0, 0, 0, .2);
+      //box-shadow: 0 0 10px rgba(0, 0, 0, .2);
       .file-title {
-        display: flex;
-        height: 40px;
-        line-height: 40px;
-        padding: 0 15px;
-        border-bottom: 1px solid #ddd;
+        //display: flex;
+        //height: 40px;
+        //line-height: 40px;
+        //padding: 0 15px;
+        //border-bottom: 1px solid #ddd;
 
         .operate {
           flex: 1;
@@ -314,7 +320,6 @@ export default {
         overflow-x: hidden;
         overflow-y: auto;
         background-color: #fff;
-
         > li {
           background-color: #fff;
         }
@@ -331,7 +336,6 @@ export default {
       position: absolute;
       top: 50%;
       left: 50%;
-      transform: translate(-50%, -50%);
       font-size: 16px;
     }
 
@@ -352,7 +356,7 @@ export default {
     }
 
     /deep/.uploader-file-actions > span {
-      margin-right: 6px;
+      //margin-right: 6px;
     }
   }
 

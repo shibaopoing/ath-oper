@@ -12,6 +12,7 @@ import store from './store'
 import router from './router'
 import '@/icons' // icon
 import '@/permission' // permission control
+import './js/directives.js'
 import $ from 'jquery'
 Vue.prototype.$ = $
 /**

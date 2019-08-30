@@ -1,25 +1,15 @@
 !-- 一个上传事例文件 -->
 <template>
   <div>
-    <el-upload
-      id="upload"
-      ref="upload"
-      class="upload-demo"
-      action=""
-      multiple
-      :limit="3"
-      :on-exceed="handleExceed"
-      :on-preview="handlePreview"
-      :on-remove="handleRemove"
-      :on-change="fileChange"
-      :file-list="fileList"
-      :auto-upload="false"
-      list-type="picture"
-    >
-      <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-      <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
-      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-    </el-upload>
+    <el-button type="text" @click="dialogVisible = true">点击打开 Dialog</el-button>
+    <el-dialog
+     v-dialogDrag
+     title="提示"
+     :visible.sync="dialogVisible"
+     width="30%">
+        <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+        <el-button style="margin-left: 10px;" size="small" type="success" @click="submitUpload">上传到服务器</el-button>
+    </el-dialog>
   </div>
 </template>
 
@@ -29,6 +19,7 @@ import SparkMD5 from 'spark-md5'
 export default {
   data() {
     return {
+      dialogVisible: false,
       files: [],
       fileList: []
     }

@@ -1,11 +1,10 @@
 <template>
   <el-dialog
-    id="global-uploader"
     v-dialogDrag
     :visible.sync="dialogVisible"
     :title="'文件列表:'+this.fileNum"
   >
-    <div>
+    <div id="global-uploader">
       <!-- 上传 -->
       <uploader
         ref="uploader"
@@ -115,9 +114,6 @@ export default {
     }
   },
   mounted() {
-    this.$nextTick(() => {
-      window.uploader = this.$refs.uploader.uploader
-    })
     Bus.$on('openUploader', query => {
       this.params = query || {}
 
@@ -291,7 +287,7 @@ export default {
 
 <style scoped lang="scss">
   #global-uploader {
-    ///z-index: 20;
+     z-index: 20;
     .uploader-app {
       //width: 1000px;
     }
@@ -308,10 +304,10 @@ export default {
         //padding: 0 15px;
         //border-bottom: 1px solid #ddd;
 
-        .operate {
+/*        .operate {
           flex: 1;
           text-align: right;
-        }
+        }*/
       }
 
       .file-list {

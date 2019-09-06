@@ -10,7 +10,7 @@
     >
       <uploader-unsupport />
 
-      <uploader-btn id="global-uploader-btn" ref="uploadBtn" :attrs="attrs">选择文件</uploader-btn>
+      <uploader-btn ref="uploadBtn" :attrs="attrs">选择文件</uploader-btn>
       <el-button size="medium" type="primary" @click="readyToUpload">提交上传</el-button>
       <uploader-list>
         <div slot-scope="props" class="file-panel">
@@ -65,11 +65,18 @@ export default {
   watch: {
   },
   mounted() {
+    this.init()
   },
   destroyed() {
     Bus.$off('openUploader')
   },
   methods: {
+    init() {
+      // 打开文件选择框
+      Bus.$emit('showUploadBoard', {
+        id: '1111' // 传入的参数
+      })
+    },
     readyToUpload() {
       Bus.$emit('uploadMyFile', {
         files: this.files// 传入的参数

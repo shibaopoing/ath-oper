@@ -100,6 +100,9 @@ export default {
       collapse: false
     }
   },
+  created: {
+
+  },
   computed: {
     // Uploader实例
     uploader() {
@@ -134,7 +137,7 @@ export default {
       for (let i = 0; i < this.params.files.length; i++) {
         const file = this.params.files[i]
         const aFile = new File([file.file], file.name)
-        this.$refs.uploader.uploader.addFile(aFile)
+        this.uploader.addFile(aFile)
       }
     })
   },

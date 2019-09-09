@@ -34,7 +34,6 @@ export default {
       var fileDom = $('#upload')
       // 获取到的files为一个File对象数组，如果允许多选的时候，文件为多个
       const files = fileDom.files
-      alert(files[0].name)
       Bus.$emit('uploadMyFile', {
         file: files // 传入的参数
       })
@@ -91,9 +90,7 @@ export default {
       function loadNext() {
         const start = currentChunk * chunkSize
         const end = ((start + chunkSize) >= file.size) ? file.size : start + chunkSize
-        alert('1121212')
         fileReader.readAsArrayBuffer(blobSlice.call(file.file, start, end))
-        alert('猜猜猜')
       }
     }
   }

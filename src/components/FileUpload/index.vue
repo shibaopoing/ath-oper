@@ -75,7 +75,7 @@ export default {
       dialogVisible: false,
       fileNum: 0,
       options: {
-        target: '/dev-api/uploader/chunk',
+        target: '/dev-api/chunk',
         chunkSize: '2048000',
         maxChunkRetries: 3,
         testChunks: true, // 是否开启服务器分片校验
@@ -154,7 +154,7 @@ export default {
     },
 
     onFileSuccess(rootFile, file, response, chunk) {
-      const res = JSON.parse(response)
+      const res = JSON.parse(response).data
 
       // 服务器自定义的错误（即虽返回200，但是是错误的情况），这种错误是Uploader无法拦截的
       if (!res.result) {
@@ -169,7 +169,7 @@ export default {
         this.statusSet(file.id, 'merging')
         const fileName = rootFile.file.name
         const uniqueIdentifier = rootFile.uniqueIdentifier
-        axios.post('/dev-api/uploader/mergeFile', qs.stringify({
+        axios.post('/dev-api/mergeFile', qs.stringify({
           filename: fileName,
           identifier: uniqueIdentifier,
           totalSize: file.size,
